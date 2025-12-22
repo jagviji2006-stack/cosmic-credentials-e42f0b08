@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,7 +10,8 @@ interface RegistrationResult {
   created_at: string;
 }
 
-export const SearchRegistration = () => {
+export const SearchRegistration = forwardRef<HTMLDivElement>(
+  function SearchRegistration(_, ref) {
   const [rollNumber, setRollNumber] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [result, setResult] = useState<RegistrationResult | null>(null);
@@ -143,4 +144,4 @@ export const SearchRegistration = () => {
       </AnimatePresence>
     </motion.div>
   );
-};
+});
