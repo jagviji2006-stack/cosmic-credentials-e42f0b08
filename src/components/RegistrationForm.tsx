@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -20,7 +20,8 @@ interface RegistrationFormProps {
   branchName: string;
 }
 
-export const RegistrationForm = ({ branch, branchName }: RegistrationFormProps) => {
+export const RegistrationForm = forwardRef<HTMLDivElement, RegistrationFormProps>(
+  function RegistrationForm({ branch, branchName }, ref) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
 
@@ -183,4 +184,4 @@ export const RegistrationForm = ({ branch, branchName }: RegistrationFormProps) 
       </button>
     </motion.form>
   );
-};
+});
