@@ -5,23 +5,186 @@ import { Stars, OrbitControls, PerspectiveCamera, Float } from '@react-three/dre
 import { motion, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 
-// Animated nebula clouds
-const NebulaCloud = ({ position, color, scale }: { position: [number, number, number]; color: string; scale: number }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
+// Realistic nebula with multiple layers and particles
+const RealisticNebula = ({ position, colors, scale, rotation = 0 }: { 
+  position: [number, number, number]; 
+  colors: string[]; 
+  scale: number;
+  rotation?: number;
+}) => {
+  const groupRef = useRef<THREE.Group>(null);
   
+  const nebulaParticles = useMemo(() => {
+    const count = 800;
+    const positions = new Float32Array(count * 3);
+    const particleColors = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    
+    for (let i = 0; i < count; i++) {
+      // Create organic cloud-like distribution
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI;
+      const radius = Math.random() * Math.random() * 5 + 0.5;
+      
+      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta) * (1 + Math.random() * 0.5);
+      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.4;
+      positions[i * 3 + 2] = radius * Math.cos(phi) * (1 + Math.random() * 0.3);
+      
+      const color = new THREE.Color(colors[Math.floor(Math.random() * colors.length)]);
+      particleColors[i * 3] = color.r;
+      particleColors[i * 3 + 1] = color.g;
+      particleColors[i * 3 + 2] = color.b;
+      
+      sizes[i] = Math.random() * 0.4 + 0.1;
+    }
+    return { positions, colors: particleColors, sizes };
+  }, [colors]);
+
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.z += 0.0005;
-      const material = meshRef.current.material as THREE.MeshBasicMaterial;
-      material.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
+    if (groupRef.current) {
+      groupRef.current.rotation.z += 0.0002;
+      groupRef.current.rotation.y += 0.0001;
     }
   });
 
   return (
-    <mesh ref={meshRef} position={position} scale={scale}>
-      <sphereGeometry args={[1, 32, 32]} />
-      <meshBasicMaterial color={color} transparent opacity={0.3} side={THREE.DoubleSide} />
-    </mesh>
+    <group ref={groupRef} position={position} scale={scale} rotation={[0, 0, rotation]}>
+      {/* Core glow layers */}
+      <mesh>
+        <sphereGeometry args={[2, 24, 24]} />
+        <meshBasicMaterial color={colors[0]} transparent opacity={0.15} side={THREE.BackSide} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[3.5, 24, 24]} />
+        <meshBasicMaterial color={colors[1]} transparent opacity={0.08} side={THREE.BackSide} />
+      </mesh>
+      
+      {/* Particle cloud */}
+      <points>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" count={nebulaParticles.positions.length / 3} array={nebulaParticles.positions} itemSize={3} />
+          <bufferAttribute attach="attributes-color" count={nebulaParticles.colors.length / 3} array={nebulaParticles.colors} itemSize={3} />
+        </bufferGeometry>
+        <pointsMaterial size={0.3} vertexColors transparent opacity={0.7} sizeAttenuation blending={THREE.AdditiveBlending} />
+      </points>
+    </group>
+  );
+};
+
+// Spiral galaxy with arms
+const SpiralGalaxy = ({ position, size, tilt = 0, color = '#8866cc' }: { 
+  position: [number, number, number]; 
+  size: number;
+  tilt?: number;
+  color?: string;
+}) => {
+  const galaxyRef = useRef<THREE.Group>(null);
+  
+  const galaxyParticles = useMemo(() => {
+    const count = 3000;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const armCount = 2;
+    
+    for (let i = 0; i < count; i++) {
+      const arm = i % armCount;
+      const armOffset = (arm / armCount) * Math.PI * 2;
+      const distance = Math.pow(Math.random(), 0.5) * size;
+      const angle = armOffset + distance * 0.8 + (Math.random() - 0.5) * 0.4;
+      const height = (Math.random() - 0.5) * 0.15 * (1 - distance / size);
+      
+      positions[i * 3] = Math.cos(angle) * distance;
+      positions[i * 3 + 1] = height;
+      positions[i * 3 + 2] = Math.sin(angle) * distance;
+      
+      const intensity = 1 - (distance / size) * 0.7;
+      const baseColor = new THREE.Color(color);
+      colors[i * 3] = baseColor.r * intensity + 0.3 * intensity;
+      colors[i * 3 + 1] = baseColor.g * intensity + 0.2 * intensity;
+      colors[i * 3 + 2] = baseColor.b * intensity + 0.1 * intensity;
+    }
+    return { positions, colors };
+  }, [size, color]);
+
+  useFrame(() => {
+    if (galaxyRef.current) {
+      galaxyRef.current.rotation.y += 0.0005;
+    }
+  });
+
+  return (
+    <group ref={galaxyRef} position={position} rotation={[tilt, 0, 0]}>
+      {/* Core */}
+      <mesh>
+        <sphereGeometry args={[size * 0.08, 16, 16]} />
+        <meshBasicMaterial color="#ffffdd" transparent opacity={0.9} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[size * 0.15, 16, 16]} />
+        <meshBasicMaterial color={color} transparent opacity={0.4} />
+      </mesh>
+      
+      {/* Spiral arms */}
+      <points>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" count={galaxyParticles.positions.length / 3} array={galaxyParticles.positions} itemSize={3} />
+          <bufferAttribute attach="attributes-color" count={galaxyParticles.colors.length / 3} array={galaxyParticles.colors} itemSize={3} />
+        </bufferGeometry>
+        <pointsMaterial size={0.04} vertexColors transparent opacity={0.85} sizeAttenuation blending={THREE.AdditiveBlending} />
+      </points>
+    </group>
+  );
+};
+
+// Star cluster / globular cluster
+const StarCluster = ({ position, count = 500, size = 3, color = '#ffeecc' }: { 
+  position: [number, number, number]; 
+  count?: number;
+  size?: number;
+  color?: string;
+}) => {
+  const clusterRef = useRef<THREE.Points>(null);
+  
+  const particles = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    
+    for (let i = 0; i < count; i++) {
+      // Spherical distribution with density toward center
+      const radius = Math.pow(Math.random(), 2) * size;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      
+      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      positions[i * 3 + 2] = radius * Math.cos(phi);
+      
+      const starColor = new THREE.Color(color);
+      const variation = Math.random() * 0.3;
+      colors[i * 3] = starColor.r + variation;
+      colors[i * 3 + 1] = starColor.g + variation * 0.5;
+      colors[i * 3 + 2] = starColor.b - variation * 0.2;
+      
+      sizes[i] = Math.random() * 0.08 + 0.02;
+    }
+    return { positions, colors, sizes };
+  }, [count, size, color]);
+
+  useFrame((state) => {
+    if (clusterRef.current) {
+      clusterRef.current.rotation.y += 0.0003;
+    }
+  });
+
+  return (
+    <points ref={clusterRef} position={position}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={particles.positions.length / 3} array={particles.positions} itemSize={3} />
+        <bufferAttribute attach="attributes-color" count={particles.colors.length / 3} array={particles.colors} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial size={0.08} vertexColors transparent opacity={0.9} sizeAttenuation blending={THREE.AdditiveBlending} />
+    </points>
   );
 };
 
@@ -175,24 +338,6 @@ const MilkyWayGalaxy = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
-// Distant galaxies
-const DistantGalaxy = ({ position, size }: { position: [number, number, number]; size: number }) => {
-  const ref = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.z += 0.001;
-    }
-  });
-
-  return (
-    <mesh ref={ref} position={position}>
-      <ringGeometry args={[size * 0.3, size, 32]} />
-      <meshBasicMaterial color="#8866aa" transparent opacity={0.3} side={THREE.DoubleSide} />
-    </mesh>
-  );
-};
-
 // Comet animation
 const Comet = ({ delay = 0 }) => {
   const ref = useRef<THREE.Group>(null);
@@ -251,21 +396,27 @@ const SpaceScene = ({ onGalaxyClick }: { onGalaxyClick: () => void }) => {
       {/* Space dust particles */}
       <SpaceDust count={800} />
       
-      {/* Nebula clouds */}
-      <NebulaCloud position={[-30, 10, -40]} color="#6633aa" scale={15} />
-      <NebulaCloud position={[35, -5, -50]} color="#aa3366" scale={12} />
-      <NebulaCloud position={[0, 25, -60]} color="#3366aa" scale={20} />
-      <NebulaCloud position={[-20, -15, -45]} color="#33aa66" scale={10} />
+      {/* Realistic Nebulae */}
+      <RealisticNebula position={[-35, 12, -50]} colors={['#8844cc', '#aa66ee', '#6622aa']} scale={4} rotation={0.3} />
+      <RealisticNebula position={[40, -8, -55]} colors={['#cc4466', '#ee6688', '#aa2244']} scale={3.5} rotation={-0.5} />
+      <RealisticNebula position={[5, 28, -65]} colors={['#4488cc', '#66aaee', '#2266aa']} scale={5} rotation={0.8} />
+      <RealisticNebula position={[-25, -18, -48]} colors={['#44cc88', '#66eeaa', '#22aa66']} scale={3} rotation={-0.2} />
+      
+      {/* Distant Spiral Galaxies */}
+      <SpiralGalaxy position={[-50, 18, -80]} size={5} tilt={0.8} color="#9977dd" />
+      <SpiralGalaxy position={[55, -15, -90]} size={4} tilt={-0.5} color="#dd7799" />
+      <SpiralGalaxy position={[25, 35, -100]} size={6} tilt={1.2} color="#77aadd" />
+      <SpiralGalaxy position={[-40, -25, -85]} size={3.5} tilt={0.3} color="#ddaa77" />
+      
+      {/* Star Clusters */}
+      <StarCluster position={[-20, 5, -35]} count={400} size={2} color="#ffffcc" />
+      <StarCluster position={[30, 15, -40]} count={300} size={1.5} color="#ffddaa" />
+      <StarCluster position={[0, -12, -38]} count={350} size={1.8} color="#aaddff" />
       
       {/* Main Milky Way Galaxy - Interactive */}
       <Float speed={1} rotationIntensity={0.1} floatIntensity={0.3}>
         <MilkyWayGalaxy onClick={onGalaxyClick} />
       </Float>
-      
-      {/* Distant galaxies */}
-      <DistantGalaxy position={[-40, 15, -70]} size={3} />
-      <DistantGalaxy position={[45, -10, -80]} size={2} />
-      <DistantGalaxy position={[20, 30, -90]} size={4} />
       
       {/* Comets */}
       <Comet delay={0} />
