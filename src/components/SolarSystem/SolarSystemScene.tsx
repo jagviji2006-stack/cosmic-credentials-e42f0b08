@@ -21,9 +21,9 @@ const branches: (Branch & { planetType: string })[] = [
   { id: 'cse-ai', name: 'CSE AI', position: [4, 0, 7], size: 0.45, color: '#CD5C5C', glowColor: '#DEB887', planetType: 'Mars' },
   { id: 'cse-ai-ds', name: 'CSE AI-DS', position: [-7, 0, 8], size: 0.9, color: '#D4A574', glowColor: '#F4A460', planetType: 'Jupiter' },
   { id: 'cse-cs', name: 'CSE CS', position: [-12, 0, 3], size: 0.8, color: '#F4D03F', glowColor: '#FAD02C', planetType: 'Saturn' },
-  { id: 'it', name: 'IT', position: [-3, 0, -5], size: 0.5, color: '#E6C47A', glowColor: '#FFD89B', planetType: 'Venus' },
-  { id: 'ecm', name: 'ECM', position: [4, 0, -9], size: 0.55, color: '#4169E1', glowColor: '#6495ED', planetType: 'Neptune' },
-  { id: 'cse-ds', name: 'CSE DS', position: [10, 0, -5], size: 0.6, color: '#72CFF8', glowColor: '#AFEEEE', planetType: 'Uranus' },
+  { id: 'it', name: 'IT', position: [-14, 0, -6], size: 0.5, color: '#E6C47A', glowColor: '#FFD89B', planetType: 'Venus' },
+  { id: 'ecm', name: 'ECM', position: [8, 0, -14], size: 0.55, color: '#4169E1', glowColor: '#6495ED', planetType: 'Neptune' },
+  { id: 'cse-ds', name: 'CSE DS', position: [17, 0, -5], size: 0.6, color: '#72CFF8', glowColor: '#AFEEEE', planetType: 'Uranus' },
 ];
 
 const decorativePlanets = [
