@@ -10,8 +10,8 @@ interface RegistrationResult {
   created_at: string;
 }
 
-export const SearchRegistration = forwardRef<HTMLDivElement>(
-  function SearchRegistration(_, ref) {
+export const SearchRegistration = forwardRef<HTMLDivElement, object>(
+  function SearchRegistration(_props, ref) {
   const [rollNumber, setRollNumber] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [result, setResult] = useState<RegistrationResult | null>(null);
@@ -64,6 +64,7 @@ export const SearchRegistration = forwardRef<HTMLDivElement>(
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
