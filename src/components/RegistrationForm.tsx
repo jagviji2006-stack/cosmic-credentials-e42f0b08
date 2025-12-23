@@ -20,7 +20,7 @@ interface RegistrationFormProps {
   branchName: string;
 }
 
-export const RegistrationForm = forwardRef<HTMLDivElement, RegistrationFormProps>(
+export const RegistrationForm = forwardRef<HTMLFormElement, RegistrationFormProps>(
   function RegistrationForm({ branch, branchName }, ref) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
@@ -90,6 +90,7 @@ export const RegistrationForm = forwardRef<HTMLDivElement, RegistrationFormProps
 
   return (
     <motion.form
+      ref={ref}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
