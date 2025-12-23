@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SolarSystemScene } from '@/components/SolarSystem/SolarSystemScene';
+import { PlanetClickEffect } from '@/components/SolarSystem/PlanetClickEffect';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 
@@ -13,10 +14,22 @@ const quotations = [
   "Where innovation meets education.",
 ];
 
+// Planet colors for effects
+const planetColors: Record<string, string> = {
+  'CSE': '#4A90D9',
+  'CSE AI': '#CD5C5C',
+  'CSE AI-DS': '#D4A574',
+  'CSE CS': '#F4D03F',
+  'IT': '#E6C47A',
+  'ECM': '#4169E1',
+  'CSE DS': '#72CFF8',
+};
+
 const Index = () => {
   const navigate = useNavigate();
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState<string | null>(null);
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [currentQuote, setCurrentQuote] = useState(0);
 
   useEffect(() => {
@@ -28,15 +41,24 @@ const Index = () => {
 
   const handlePlanetClick = useCallback((branchId: string, branchName: string) => {
     setSelectedBranch(branchName);
+    setSelectedBranchId(branchId);
     setIsTransitioning(true);
     
+    // Navigate after the effect completes
     setTimeout(() => {
       navigate(`/register/${branchId}`, { state: { branchName } });
-    }, 1000);
+    }, 1200);
   }, [navigate]);
 
   return (
     <div className="relative min-h-screen overflow-hidden">
+      {/* Planet click effect overlay */}
+      <PlanetClickEffect 
+        isActive={isTransitioning} 
+        branchName={selectedBranch}
+        planetColor={selectedBranch ? planetColors[selectedBranch] : '#4fc3f7'}
+      />
+
       {/* Go Back Button - Top Left */}
       <motion.button
         initial={{ opacity: 0, x: -20 }}
@@ -129,29 +151,6 @@ const Index = () => {
           </p>
         </div>
       </motion.div>
-
-      {/* Transition overlay */}
-      <AnimatePresence>
-        {isTransitioning && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-20 flex items-center justify-center bg-background/80 backdrop-blur-sm"
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-center"
-            >
-              <div className="text-6xl mb-4 animate-pulse">🚀</div>
-              <p className="font-display text-xl gradient-text-animated">
-                Warping to {selectedBranch}...
-              </p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* 3D Scene */}
       <SolarSystemScene 
