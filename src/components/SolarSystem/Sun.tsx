@@ -3,7 +3,12 @@ import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 
-export const Sun = () => {
+interface SunProps {
+  onAdminClick?: () => void;
+}
+
+export const Sun = ({ onAdminClick }: SunProps) => {
+  const [hovered, setHovered] = useState(false);
   const sunRef = useRef<THREE.Mesh>(null);
   const coronaRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
