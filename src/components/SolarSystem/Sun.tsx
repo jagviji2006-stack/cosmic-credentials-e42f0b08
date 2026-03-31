@@ -143,30 +143,35 @@ export const Sun = ({ onAdminClick }: SunProps) => {
       </mesh>
       
       {/* Admin Portal label */}
-      <Html position={[0, 3.2, 0]} center style={{ pointerEvents: 'none' }}>
+      <Html position={[0, 3.5, 0]} center style={{ pointerEvents: 'none' }}>
         <div className="flex flex-col items-center gap-1">
           <div 
-            className={`font-display text-sm tracking-[0.3em] whitespace-nowrap transition-all duration-500 font-bold ${hovered ? 'scale-125' : 'scale-100'}`}
+            className={`font-display text-base tracking-[0.3em] whitespace-nowrap transition-all duration-500 font-bold ${hovered ? 'scale-[1.3]' : 'scale-100'}`}
             style={{ 
-              color: hovered ? '#FFF8DC' : '#FFD700',
-              textShadow: hovered 
-                ? '0 0 20px #FFD700, 0 0 40px #FF8C00, 0 0 60px #FF6B00, 0 0 80px #FF4500' 
-                : '0 0 10px #FFD700, 0 0 20px #FF8C00, 0 0 30px #FF6B00',
-              animation: 'pulse 2s ease-in-out infinite',
+              color: '#FFF8DC',
+              textShadow: '0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 40px #FF8C00, 0 0 60px #FF6B00, 0 0 80px #FF4500, 0 0 100px #FF4500',
+              animation: 'adminPulse 1.5s ease-in-out infinite',
             }}
           >
             ✦ ADMIN PORTAL ✦
           </div>
           <div 
-            className="text-[10px] tracking-widest whitespace-nowrap"
+            className="text-[10px] tracking-widest whitespace-nowrap font-bold"
             style={{ 
-              color: hovered ? '#FFEEBB' : '#FFB347',
-              textShadow: '0 0 8px #FF8C00',
+              color: '#FFD700',
+              textShadow: '0 0 6px #FF8C00, 0 0 12px #FF6B00',
+              animation: 'adminPulse 1.5s ease-in-out infinite 0.5s',
             }}
           >
-            CLICK THE SUN
+            ☀️ CLICK THE SUN ☀️
           </div>
         </div>
+        <style>{`
+          @keyframes adminPulse {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); }
+          }
+        `}</style>
       </Html>
       
       {/* Inner corona */}
