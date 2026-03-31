@@ -36,7 +36,7 @@ interface SolarSystemSceneProps {
   isTransitioning: boolean;
 }
 
-export const SolarSystemScene = ({ onPlanetClick, isTransitioning }: SolarSystemSceneProps) => {
+export const SolarSystemScene = ({ onPlanetClick, onAdminClick, isTransitioning }: SolarSystemSceneProps) => {
   return (
     <div className={`w-full h-screen ${isTransitioning ? 'animate-warp' : ''}`}>
       <Canvas>
