@@ -414,7 +414,6 @@ const Admin = () => {
                     background: 'rgba(255,255,255,0.8)',
                     border: '1px solid rgba(76, 175, 80, 0.3)',
                     color: '#1B5E20',
-                    focusRingColor: '#4CAF50',
                   }}
                   required
                   maxLength={50}
