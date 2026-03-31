@@ -143,10 +143,29 @@ export const Sun = ({ onAdminClick }: SunProps) => {
       </mesh>
       
       {/* Admin Portal label */}
-      <Html position={[0, 3, 0]} center style={{ pointerEvents: 'none' }}>
-        <div className={`font-display text-xs tracking-widest whitespace-nowrap transition-all duration-300 ${hovered ? 'text-yellow-300 scale-110' : 'text-yellow-500/70 scale-100'}`}
-          style={{ textShadow: '0 0 10px rgba(253, 184, 19, 0.8)' }}>
-          ADMIN PORTAL
+      <Html position={[0, 3.2, 0]} center style={{ pointerEvents: 'none' }}>
+        <div className="flex flex-col items-center gap-1">
+          <div 
+            className={`font-display text-sm tracking-[0.3em] whitespace-nowrap transition-all duration-500 font-bold ${hovered ? 'scale-125' : 'scale-100'}`}
+            style={{ 
+              color: hovered ? '#FFF8DC' : '#FFD700',
+              textShadow: hovered 
+                ? '0 0 20px #FFD700, 0 0 40px #FF8C00, 0 0 60px #FF6B00, 0 0 80px #FF4500' 
+                : '0 0 10px #FFD700, 0 0 20px #FF8C00, 0 0 30px #FF6B00',
+              animation: 'pulse 2s ease-in-out infinite',
+            }}
+          >
+            ✦ ADMIN PORTAL ✦
+          </div>
+          <div 
+            className="text-[10px] tracking-widest whitespace-nowrap"
+            style={{ 
+              color: hovered ? '#FFEEBB' : '#FFB347',
+              textShadow: '0 0 8px #FF8C00',
+            }}
+          >
+            CLICK THE SUN
+          </div>
         </div>
       </Html>
       
