@@ -32,10 +32,11 @@ const decorativePlanets = [
 
 interface SolarSystemSceneProps {
   onPlanetClick: (branchId: string, branchName: string) => void;
+  onAdminClick?: () => void;
   isTransitioning: boolean;
 }
 
-export const SolarSystemScene = ({ onPlanetClick, isTransitioning }: SolarSystemSceneProps) => {
+export const SolarSystemScene = ({ onPlanetClick, onAdminClick, isTransitioning }: SolarSystemSceneProps) => {
   return (
     <div className={`w-full h-screen ${isTransitioning ? 'animate-warp' : ''}`}>
       <Canvas>
@@ -55,7 +56,7 @@ export const SolarSystemScene = ({ onPlanetClick, isTransitioning }: SolarSystem
         
         <Suspense fallback={null}>
           <StarField count={6000} />
-          <Sun />
+          <Sun onAdminClick={onAdminClick} />
           
           {/* Asteroid belt between Mars and Jupiter */}
           <AsteroidBelt innerRadius={9} outerRadius={11} count={400} />

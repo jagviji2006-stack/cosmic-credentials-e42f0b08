@@ -1,8 +1,14 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 
-export const Sun = () => {
+interface SunProps {
+  onAdminClick?: () => void;
+}
+
+export const Sun = ({ onAdminClick }: SunProps) => {
+  const [hovered, setHovered] = useState(false);
   const sunRef = useRef<THREE.Mesh>(null);
   const coronaRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
@@ -125,10 +131,24 @@ export const Sun = () => {
 
   return (
     <group position={[0, 0, 0]}>
-      {/* Core sun with procedural texture */}
-      <mesh ref={sunRef} material={sunMaterial}>
+      {/* Core sun with procedural texture - clickable */}
+      <mesh 
+        ref={sunRef} 
+        material={sunMaterial}
+        onClick={(e) => { e.stopPropagation(); onAdminClick?.(); }}
+        onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer'; }}
+        onPointerOut={() => { setHovered(false); document.body.style.cursor = 'default'; }}
+      >
         <sphereGeometry args={[2, 64, 64]} />
       </mesh>
+      
+      {/* Admin Portal label */}
+      <Html position={[0, 3, 0]} center style={{ pointerEvents: 'none' }}>
+        <div className={`font-display text-xs tracking-widest whitespace-nowrap transition-all duration-300 ${hovered ? 'text-yellow-300 scale-110' : 'text-yellow-500/70 scale-100'}`}
+          style={{ textShadow: '0 0 10px rgba(253, 184, 19, 0.8)' }}>
+          ADMIN PORTAL
+        </div>
+      </Html>
       
       {/* Inner corona */}
       <mesh ref={coronaRef} scale={1.15}>

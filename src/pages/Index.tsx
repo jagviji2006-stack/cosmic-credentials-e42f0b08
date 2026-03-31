@@ -71,16 +71,6 @@ const Index = () => {
         <span className="hidden sm:inline">Back to Home</span>
       </motion.button>
 
-      {/* Admin Portal - Top Right */}
-      <motion.button
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.3 }}
-        onClick={() => navigate('/admin')}
-        className="absolute top-4 right-4 md:top-6 md:right-6 z-20 px-4 py-2 rounded-lg glass-panel text-muted-foreground hover:text-primary hover:border-primary/50 transition-all duration-300 font-display text-xs"
-      >
-        Admin Portal
-      </motion.button>
 
       {/* Header */}
       <motion.header
@@ -155,6 +145,7 @@ const Index = () => {
       {/* 3D Scene */}
       <SolarSystemScene 
         onPlanetClick={handlePlanetClick}
+        onAdminClick={() => navigate('/admin')}
         isTransitioning={isTransitioning}
       />
     </div>
