@@ -56,7 +56,7 @@ export const SolarSystemScene = ({ onPlanetClick, onAdminClick, isTransitioning 
         
         <Suspense fallback={null}>
           <StarField count={6000} />
-          <Sun />
+          <Sun onAdminClick={onAdminClick} />
           
           {/* Asteroid belt between Mars and Jupiter */}
           <AsteroidBelt innerRadius={9} outerRadius={11} count={400} />

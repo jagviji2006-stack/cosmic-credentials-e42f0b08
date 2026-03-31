@@ -145,6 +145,7 @@ const Index = () => {
       {/* 3D Scene */}
       <SolarSystemScene 
         onPlanetClick={handlePlanetClick}
+        onAdminClick={() => navigate('/admin')}
         isTransitioning={isTransitioning}
       />
     </div>
