@@ -32,6 +32,7 @@ const decorativePlanets = [
 
 interface SolarSystemSceneProps {
   onPlanetClick: (branchId: string, branchName: string) => void;
+  onAdminClick?: () => void;
   isTransitioning: boolean;
 }
 
